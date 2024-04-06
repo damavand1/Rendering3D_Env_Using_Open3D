@@ -85,13 +85,13 @@ def animate_mesh(mesh, vis):
     while True:
         print('Hi')
         # Move the mesh to the left by 'step' units
-        #translation_matrix = np.identity(4)
-        #translation_matrix[0, 3] -= 5  # Move 'step' units along the negative X-axis
-        #mesh.transform(translation_matrix)
+        translation_matrix = np.identity(4)
+        translation_matrix[0, 3] -= 5  # Move 'step' units along the negative X-axis
+        mesh.transform(translation_matrix)
         
         # Update visualization
-        #vis.poll_events()
-        #vis.update_renderer()
+        vis.poll_events()
+        vis.update_renderer()
         
         # Wait for 'interval' seconds
         time.sleep(1)
