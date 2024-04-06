@@ -9,12 +9,13 @@ import numpy as np
 from PIL import Image
 import copy
 import os
+import time
+import threading
 
-# # Load stereo images
+
+
+# find current_directory
 current_directory = os.path.dirname(os.path.abspath(__file__))
-
-# # Load stereo images
-# img_left =cv2.imread( os.path.join(current_directory, 'B.jpg'))
 
 o3d.__version__
 
@@ -80,8 +81,21 @@ def get_rotated_mesh(mesh, x_theta, y_theta, z_theta):
     
     return mesh_rotated
 
+def animate_mesh(mesh, vis):
+    while True:
+        print('Hi')
+        # Move the mesh to the left by 'step' units
+        #translation_matrix = np.identity(4)
+        #translation_matrix[0, 3] -= 5  # Move 'step' units along the negative X-axis
+        #mesh.transform(translation_matrix)
+        
+        # Update visualization
+        #vis.poll_events()
+        #vis.update_renderer()
+        
+        # Wait for 'interval' seconds
+        time.sleep(1)
 
-i = 0
 def main():
     vis = o3d.visualization.Visualizer()
     vis.create_window()
@@ -182,10 +196,21 @@ def main():
 
     #o3d.visualization.draw_geometries(draw_geoms_list)
     #vis.update_geometry()
-    vis.poll_events()
-    vis.update_renderer()
+    
+    #vis.poll_events()
+    #vis.update_renderer()
 
+
+
+    # Start animation thread for Pirooz_mesh
+    animation_thread = threading.Thread(target=animate_mesh, args=(Pirooz_mesh, vis))
+    animation_thread.daemon = True  # Make the thread a daemon so it exits when the main thread exits
+    animation_thread.start()
+
+    # Run the visualization
     vis.run()
 
-main()
+
+if __name__ == "__main__":
+    main()
 
