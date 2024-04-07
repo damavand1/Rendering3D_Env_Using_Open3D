@@ -90,11 +90,16 @@ def animate_mesh(mesh, vis):
         mesh.transform(translation_matrix)
         
         # Update visualization
+        #vis.poll_events()
+        #vis.update_renderer()
+
+        vis.update_geometry(mesh)
         vis.poll_events()
         vis.update_renderer()
         
         # Wait for 'interval' seconds
-        time.sleep(1)
+        #time.sleep(1)
+        threading.Event().wait(1)
 
 def main():
     vis = o3d.visualization.Visualizer()
@@ -203,12 +208,15 @@ def main():
 
 
     # Start animation thread for Pirooz_mesh
-    animation_thread = threading.Thread(target=animate_mesh, args=(Pirooz_mesh, vis))
-    animation_thread.daemon = True  # Make the thread a daemon so it exits when the main thread exits
-    animation_thread.start()
+    #animation_thread = threading.Thread(target=animate_mesh, args=(Pirooz_mesh, vis))
+    #animation_thread.daemon = True  # Make the thread a daemon so it exits when the main thread exits
+    #animation_thread.start()
 
+    animate_mesh(Pirooz_mesh, vis)
     # Run the visualization
     vis.run()
+    vis.destroy_window()
+
 
 
 if __name__ == "__main__":
