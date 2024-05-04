@@ -2,6 +2,9 @@
 # https://towardsdatascience.com/3d-data-processing-with-open3d-c3062aadc72e
 # https://github.com/isl-org/Open3D/discussions/6706
 # https://stackoverflow.com/questions/62912397/open3d-visualizing-multiple-point-clouds-as-a-video-animation
+# http://www.open3d.org/docs/0.8.0/tutorial/Advanced/non_blocking_visualization.html
+
+# open3d repo -> examples/python/visualization/non_blocking_visualization.py
 
 import open3d as o3d
 import numpy as np
@@ -81,25 +84,36 @@ def get_rotated_mesh(mesh, x_theta, y_theta, z_theta):
     
     return mesh_rotated
 
-def animate_mesh(mesh, vis):
-    while True:
-        print('Hi')
-        # Move the mesh to the left by 'step' units
+def animate_mesh1(mesh, vis):
+    translation_step = 0.1  # Define the step size for translation
+    total_translation = -5  # Define the total translation along X-axis
+    num_iterations = int(abs(total_translation) / translation_step)  # Calculate number of iterations
+    
+    for _ in range(num_iterations):
         translation_matrix = np.identity(4)
-        translation_matrix[0, 3] -= 5  # Move 'step' units along the negative X-axis
+        translation_matrix[0, 3] -= translation_step  # Move mesh by translation_step units along the negative X-axis
         mesh.transform(translation_matrix)
         
         # Update visualization
-        #vis.poll_events()
-        #vis.update_renderer()
-
         vis.update_geometry(mesh)
         vis.poll_events()
         vis.update_renderer()
+        time.sleep(0.01)  # Add a small delay for smoother animation
+
+def animate_mesh(mesh, vis):
+    translation_step = 0.1  # Define the step size for translation
+    total_translation = -5  # Define the total translation along X-axis
+    num_iterations = int(abs(total_translation) / translation_step)  # Calculate number of iterations
+    
+    for _ in range(num_iterations):
+        translation_matrix = np.identity(4)
+        translation_matrix[0, 3] -= translation_step  # Move mesh by translation_step units along the negative X-axis
+        mesh.transform(translation_matrix)
         
-        # Wait for 'interval' seconds
-        #time.sleep(1)
-        threading.Event().wait(1)
+        # Update visualization
+        vis.update_geometry(mesh)
+        vis.poll_events()
+        vis.update_renderer()
 
 def main():
     vis = o3d.visualization.Visualizer()
@@ -212,9 +226,10 @@ def main():
     #animation_thread.daemon = True  # Make the thread a daemon so it exits when the main thread exits
     #animation_thread.start()
 
-    animate_mesh(Pirooz_mesh, vis)
+    while True:
+        animate_mesh(Pirooz_mesh, vis)
     # Run the visualization
-    vis.run()
+    #vis.run()
     vis.destroy_window()
 
 
