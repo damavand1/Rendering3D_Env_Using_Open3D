@@ -8,22 +8,28 @@
 
 import open3d as o3d
 import numpy as np
+import cv2
 
 from PIL import Image
 import copy
 import os
 import time
 import threading
+from functools import partial
 
-
+# Global variable to control the main loop
+keep_running = True
 
 # find current_directory
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
 o3d.__version__
 
-def visualize(mesh):
-    vis = o3d.visualization.Visualizer()
+def visualize___candel(mesh):
+    #vis = o3d.visualization.Visualizer()
+    vis = o3d.visualization.VisualizerWithKeyCallback()
+    #vis.register_key_callback(ord('q'), key_callback)
+
     vis.create_window()
     vis.add_geometry(mesh)
     vis.run()
@@ -115,8 +121,23 @@ def animate_mesh(mesh, vis):
         vis.poll_events()
         vis.update_renderer()
 
+def key_callback(vis):
+    global keep_running
+    keep_running = False
+    print("Hello")
+    #global keep_running
+    #if key == ord('q') and action == o3d.visualization.KeyEvent.Action.UP:
+
+
+
 def main():
-    vis = o3d.visualization.Visualizer()
+    global keep_running
+
+    #vis = o3d.visualization.Visualizer()
+    vis = o3d.visualization.VisualizerWithKeyCallback()
+
+    vis.register_key_callback(ord('Q'),partial( key_callback))
+
     vis.create_window()
 
     Pirooz_mesh = o3d.io.read_triangle_mesh(os.path.join(current_directory, 'data/01-TeslaModelSplaid.obj'))
@@ -226,8 +247,26 @@ def main():
     #animation_thread.daemon = True  # Make the thread a daemon so it exits when the main thread exits
     #animation_thread.start()
 
-    while True:
+    
+
+    #vis = o3d.visualization.VisualizerWithKeyCallback()
+
+    #vis.register_key_action_callback(ord('q'), key_callback)
+
+
+    #while True:
+    while keep_running:
+        print(keep_running)
+        #vis.poll_events()
+
         animate_mesh(Pirooz_mesh, vis)
+        print('---')
+
+        # Break the loop if 'q' is pressed 
+        # if cv2.waitKey(1) & 0xFF == ord("q"):
+        #     print('aaa')
+        #     break 
+
     # Run the visualization
     #vis.run()
     vis.destroy_window()
