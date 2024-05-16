@@ -16,6 +16,8 @@ import os
 import time
 import threading
 from functools import partial
+from DTO import ElementIn3D  # Import the ElementIn3D class from DTO.py
+
 
 # Global variable to control the main loop
 keep_running = True
@@ -121,6 +123,10 @@ def animate_mesh(mesh, vis):
         vis.poll_events()
         vis.update_renderer()
 
+def Render_Scene(Elements,vis):
+    for obj in Elements:
+        print("TypeId:", obj.TypeId)
+
 def key_callback(vis):
     global keep_running
     keep_running = False
@@ -136,7 +142,7 @@ def main():
     #vis = o3d.visualization.Visualizer()
     vis = o3d.visualization.VisualizerWithKeyCallback()
 
-    vis.register_key_callback(ord('Q'),partial( key_callback))
+    vis.register_key_callback(ord('Q'),partial(key_callback))
 
     vis.create_window()
 
@@ -256,10 +262,17 @@ def main():
 
     #while True:
     while keep_running:
-        print(keep_running)
         #vis.poll_events()
 
         animate_mesh(Pirooz_mesh, vis)
+
+        objects = [
+           ElementIn3D(1, 0, 0, 0, 0, 0, 0),  # Example object 1
+           ElementIn3D(2, 1, 1, 1, 45, 45, 45)  # Example object 2
+        ]
+
+        Render_Scene(objects, vis)
+
         print('---')
 
         # Break the loop if 'q' is pressed 
